@@ -232,7 +232,7 @@ var bclib = {
         }
         },
         edit: function(v){
-          createWindow(v, "<textarea id=TA>"+eval(v)+"</textarea><br><button id=BTN>OK</button>")
+          createWindow(v, "<textarea id=TA rows=7 cols=22>"+eval(v)+"</textarea><br><button id=BTN>OK</button>")
           BTN.onclick = function(){eval(v + " = " + "'" + TA.value + "'")}
         },
         ythemer: function(){
@@ -240,10 +240,10 @@ var bclib = {
           <fieldset><legend>Фон</legend>\
           <input id='clr' type='color' value='#ff0000'><button onclick='bclib.temp.chclr()' style='float: right;'>OK</button></fieldset>\
           <fieldset><legend>Окна</legend>\
-          <div style='clear: both;'>windowStyle <button style='float: right;' onclick='bclib.util.edit(`bclib.temp.windowStyle`)'>Открыть</button></div>\
-          <div style='clear: both;'>windowHeaderStyle <button style='float: right;' onclick='bclib.util.edit(`bclib.temp.windowHeaderStyle`)'>Открыть</button></div>\
-          <div style='clear: both;'>closeButtonStyle <button style='float: right;' onclick='bclib.util.edit(`bclib.temp.closeButtonStyle`)'>Открыть</button></div>\
-          <div style='clear: both;'>closeButtonText <button style='float: right;' onclick='bclib.util.edit(`bclib.temp.closeButtonText`)'>Открыть</button></div></fieldset>");
+          <div style='clear: both;'>windowStyle <button style='float: right;' onclick='bclib.util.edit(\"bclib.temp.windowStyle\")'>Открыть</button></div>\
+          <div style='clear: both;'>windowHeaderStyle <button style='float: right;' onclick='bclib.util.edit(\"bclib.temp.windowHeaderStyle\")'>Открыть</button></div>\
+          <div style='clear: both;'>closeButtonStyle <button style='float: right;' onclick='bclib.util.edit(\"bclib.temp.closeButtonStyle\")'>Открыть</button></div>\
+          <div style='clear: both;'>closeButtonText <button style='float: right;' onclick='bclib.util.edit(\"bclib.temp.closeButtonText\")'>Открыть</button></div></fieldset>");
 
           bclib.temp.chclr = function(){
           delete document.body.style.backgroundImage;
@@ -265,7 +265,7 @@ var bclib = {
             if(state){
               createWindow(filename, "<div id=TA contenteditable style=\"outline: none;\">" + bclib.storage[filename] + "</div><hr style=\"margin: 0px;\"><button id=BTN>OK</button>")
             }else{
-              createWindow(filename, "<textarea id=TA>"+bclib.storage[filename]+"</textarea><br><button id=BTN>OK</button>")
+              createWindow(filename, "<textarea rows=7 cols=22 id=TA>"+bclib.storage[filename]+"</textarea><br><button id=BTN>OK</button>")
             }
             BTN.onclick = function(){bclib.storage[filename] = TA.value || TA.innerHTML}
           },
@@ -288,7 +288,7 @@ var bclib = {
 				var fs = WScript.CreateObject("Scripting.FileSystemObject");
 				var fls = Object.keys(bclib.storage);
 				for(var i in bclib.storage){
-					var f = fs.CreateTextFile("files\\" + i, 1, 1);
+					var f = fs.CreateTextFile("files\\" + i, 1, 0);
 					f.Write(bclib.storage[i]);
 					f.Close();
 					r += "Dumped bclib.storage[\"" + i + "\"] to FS.<br>";
@@ -297,6 +297,20 @@ var bclib = {
 			}catch(e){
 				r += "Dump failed: " + e;
 			}
+			return r;
+		  },
+		  load: function(){
+			var r = "Loading files to bclib.storage...<br>";
+			bclib.storage = {}
+			
+			var fs = WScript.CreateObject("Scripting.FileSystemObject");
+			var files = fs.GetFolder("files");
+
+			for(var e = new Enumerator(files.Files); !e.atEnd(); e.moveNext()){
+				bclib.storage[e.item().Name] = fs.OpenTextFile(e.item().Path).ReadAll();
+				r += "Loaded " + e.item().Name + " to bclib.storage.<br>"
+			}
+			r += "Loaded files to bclib.storage.";
 			return r;
 		  },
           open: function(filename){
@@ -367,7 +381,7 @@ var bclib = {
 	  },
       winOffset: {x: 300, y: 300},
       storage: {},
-      version: "BCLib v4.6.1 HTA (23.01.2022)",
+      version: "BCLib v4.6.1 HTA (02.02.2022)",
       ver: 4.6
   }
 var wnd = 0
@@ -412,12 +426,7 @@ window.onkeydown = function(e){
     }
 }
 
-var fs = WScript.CreateObject("Scripting.FileSystemObject");
-var files = fs.GetFolder("files");
-
-for(var e = new Enumerator(files.Files); !e.atEnd(); e.moveNext()){
-	bclib.storage[e.item().Name] = fs.OpenTextFile(e.item().Path).ReadAll();
-}
+bclib.file.load();
 
 bclib.temp.fsdumpID = setInterval(function(){
 	bclib.file.dump();
@@ -425,9 +434,6 @@ bclib.temp.fsdumpID = setInterval(function(){
 
 bclib.task.fsdump = {
 	name: "fsdump",
-	onclose: "clearInterval(bclib.temp.fsDumpID)"
+	onclose: "clearInterval(bclib.temp.fsdumpID)"
 }
 
-if(bclib.storage["autorun.bc"]){
-	bclib.file.run("autorun.bc");
-}

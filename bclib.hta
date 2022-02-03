@@ -14,7 +14,7 @@
   <title id="ttl"></title>
   <hta:application 
   id=app
-  applicationName=app
+  applicationName=bclib
   caption=yes
   innerBorder=yes
   selection=no
@@ -23,15 +23,21 @@
   navigable=yes 
   icon="bclib.ico" />
   <script src="wscript.js"></script>
-  <script>resize(600, 500)</script>
+  <script>resize(800, 600)</script>
 </head>
 <body>
 	<div id="desktop"></div>
 	<div id="windows"></div>
 	<script src="bclib.js"></script>
 	<script>
-		bclib.desktop();
-		
+		if(app.commandLine.split("exec=")[1]){
+			eval(app.commandLine.split("=")[1]);
+		}else{
+			bclib.desktop();
+			if(bclib.storage["autorun.bc"]){
+				bclib.file.run("autorun.bc");
+			}
+		}
 		ttl.innerHTML = bclib.version;
 	</script>
 </body>
