@@ -200,6 +200,10 @@ var bclib = {
             file = "file.png"
             title = "Mediaplayer Link File"
             click="bclib.util.mediaplayer(\""+i+"\")"
+          }else if(i.slice(i.length-4) == ".pkg"){
+            file = "file-js.png"
+            title = "Пакет"
+            click="bclib.CLI.createCLIWindow(\"\",1);bclib.CLI.echo(bclib.pkg.install(\""+i+"\"))"
           }else{
             switch(i){
               case "key":
@@ -280,10 +284,15 @@ var bclib = {
             delete bclib.storage[filename]
           },
           download: function(filename, link){
-
+			var xhr = WScript.CreateObject("Microsoft.XMLHTTP");
+			xhr.Open("GET", link, false);
+			xhr.Send(null);
+			bclib.file.write(filename, xhr.responseText);
           },
-		  dump: function(){
-			var r = "Dumping bclib.storage to FS...<br>";
+		  dump: function(obj){
+			if(!obj) obj = bclib.storage;
+			
+			var r = "Dumping " + obj + " to FS...<br>";
 			try{
 				var fs = WScript.CreateObject("Scripting.FileSystemObject");
 				var fls = Object.keys(bclib.storage);
@@ -379,10 +388,46 @@ var bclib = {
 			  delete bclib.task[name];
 		  }
 	  },
+	  pkg: {
+		  install: function(name){
+			  var pkg;
+			  try{
+				pkg = JSON.parse(bclib.file.read(name));
+			  }catch(e){
+				  return "Incorrect package.";
+			  }
+			  if(pkg.bclibver > bclib.ver) return "Incorrect BCLib version.";
+			  var r = "Installing package '" + name + "'...<br>";
+			  for(var file in pkg.files){
+				  r += "Downloading file '" + file + "'...<br>";
+				  bclib.file.download(pkg.name + "." + file, pkg.files[file]);
+				  r += "Downloaded file '" + file + "'.<br>";
+			  }
+			  if(bclib.file.read(pkg.name + ".setup.js")){
+				  bclib.file.run(pkg.name + ".setup.js");
+				  bclib.file.delete(pkg.name + ".setup.js");
+				  r += "Setup.JS found, executing...<br>"
+			  }
+			  r += "Installed package '" + name + "'";
+			  return r;
+		  },
+		  uninstall: function(name){
+			  var r = "Uninstalling package '" + name + "'<br>";
+			  for(var i in bclib.storage){
+				  if(i.includes(name)){
+					  r += "Deleting file '" + i + "'...<br>";
+					  delete bclib.storage[i];
+					  r += "Deleted file: " + i + "<br>";
+				  }
+			  }
+			  r += "Uninstalled package '" + name + "'."
+			  return r;
+		  }
+	  },
       winOffset: {x: 300, y: 300},
       storage: {},
-      version: "BCLib v4.6.1 HTA (02.02.2022)",
-      ver: 4.6
+      version: "BCLib v4.7.0 HTA (12.02.2022)",
+      ver: 4.7
   }
 var wnd = 0
       function createWindow(title, html){
@@ -412,6 +457,18 @@ var wnd = 0
         }
 
       }
+
+String.prototype.includes = function(search, start){
+    if (typeof start !== 'number') {
+      start = 0;
+    }
+
+    if (start + search.length > this.length) {
+      return false;
+    } else {
+      return this.indexOf(search, start) !== -1;
+    }
+}
 
 bclib.util.tmp = bclib.temp;
 bclib.util.file = bclib.file;
