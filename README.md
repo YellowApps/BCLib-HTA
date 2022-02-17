@@ -1,6 +1,6 @@
 # BCLib-HTA
 <pre>
-BCLib-HTA - BCLib в пиложении
+BCLib-HTA - BCLib в приложении
 
 Запуск:
 1) Распаковать архив
