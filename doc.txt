@@ -56,4 +56,4 @@ bclib.temp.windowHeaderStyle - CSS - стили заголовка окна
 bclib.temp.closeButtonStyle - CSS - стили кнопки закрытия
 bclib.temp.closeButtonText - текст кнопки закрытия
 
-createWindow("title", "text") - создать окно с заголовком title и текстомtext
+createWindow("title", "text") - создать окно с заголовком title и текстом text
