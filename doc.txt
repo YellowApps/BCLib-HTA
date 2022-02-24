@@ -28,6 +28,11 @@ bclib.util.filemgr() - открыть файловый менеджер
 bclib.util.edit("var") - изменить переменную var
 bclib.util.ythemer() - открыть менеджер тем
 
+bclib.CLI.createCLIWindow("title") - создать окно консоли с заголовком title
+bclib.CLI.echo("text") - вывести в консоль текст text
+bclib.CLI.input("text", "exec") - вывести в консоль запрос с текстом text. При нажатии на ОК введенный текст сохранится в bclib.temp.inutValue и выполнится exec
+bclib.CLI.clear() - очистить консоль
+
 bclib.file.write("filename", "text") - записать текст text в файл filename
 bclib.file.add("filename", "text") - добавить текст text в файл filename
 bclib.file.read("filename") - прочитать файл filename
