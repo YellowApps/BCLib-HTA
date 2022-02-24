@@ -1,0 +1,59 @@
+Документация по BCLib 4.7.0 HTA
+
+
+:--------------------Расшифровка символов перед функциями--------------------------------------------------------------:
+: [!]{замена} Не рекомендуется использовать данную функцию, используйте замену                                         :
+: [A] Функция вызывается автоматически при старте BCLib                                                                :
+: [I]{интервал} Функция вызывается автоматически, с интервалом "интервал".                                             :
+:----------------------------------------------------------------------------------------------------------------------:
+
+
+bclib.version - версия BCLib и дата выпуска
+bclib.ver - версия BCLib
+bclib.storage - объект виртуального файлового хранилища
+[A] bclib.desktop() - показать рабочий стол
+
+bclib.util.utilmgr("object") - открыть менеджер утилит для объекта object
+bclib.util.yedit("object") - открыть редактор YEdit для объекта object
+bclib.util.run("code") - запустить JS код code
+bclib.util.close() - закрыть все окна
+bclib.util.reboot() - перезапуск BCLib
+bclib.util.showMessage("title", "text", "btn", "onClick") - показать сообщение с заголовком title, текстом textи кнопкой btn. При нажатии на кнопку запустится код onClick
+bclib.util.addApp("file", "url", width, height) - добавить IFRAME - приложение по адресу url. Окно будет иметь ширину width и выстоу height. Приложение будет сохранено в файл file
+bclib.util.openPage("url") - открыть веб - страницу по адресу url
+bclib.util.mediaplayer("filename") - открыть в медиаплеере MLF - файл filename
+[!]{bclib.util.yedit} bclib.util.varexp("obj") - открыть Variable Explorer по адресу obj
+bclib.util.cmd(fixed) - открыть командную строку. Если fixed = true, окно будет фиксированного размера
+bclib.util.filemgr() - открыть файловый менеджер
+bclib.util.edit("var") - изменить переменную var
+bclib.util.ythemer() - открыть менеджер тем
+
+bclib.file.write("filename", "text") - записать текст text в файл filename
+bclib.file.add("filename", "text") - добавить текст text в файл filename
+bclib.file.read("filename") - прочитать файл filename
+bclib.file.edit("filename") - изменить файл filename
+bclib.file.run("filename") - запустить файл filename
+bclib.file.delete("filename") - удалить файл filename
+bclib.file.download("filename", "link") - скачать файл filename по ссылке url
+[I]{1000} bclib.file.dump() - сбросить виртуальное файловое хранилище на диск
+[A] bclib.file.load() - загрузить файлы в виртуальное файловое хранилище
+bclib.file.open("filename") - открыть файл filename как HTML - документ
+
+bclib.themes.normal() - применить обычную тему
+bclib.themes.dark() - применить тёмную тему
+bclib.themes.winxp() - применить тему Windows XP.
+
+bclib.json.load("filename") - распарсить JSON - файл filename в объект bclib.json.filename
+
+bclib.task.kill("taskname") - снять задачу taskname
+
+bclib.pkg.install("filename") - установить пакет filename
+bclib.pkg.uninstall("pkgname") - удалить пакет pkgname
+
+bclib.temp.deletedFiles - корзина
+bclib.temp.windowStyle - CSS - стили окна
+bclib.temp.windowHeaderStyle - CSS - стили заголовка окна
+bclib.temp.closeButtonStyle - CSS - стили кнопки закрытия
+bclib.temp.closeButtonText - текст кнопки закрытия
+
+createWindow("title", "text") - создать окно с заголовком title и текстомtext
