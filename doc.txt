@@ -5,12 +5,13 @@
 : [!]{замена} Не рекомендуется использовать данную функцию, используйте замену                                         :
 : [A] Функция вызывается автоматически при старте BCLib                                                                :
 : [I]{интервал} Функция вызывается автоматически, с интервалом "интервал".                                             :
+: [W] Функция доступна только в приложении для Windows                                                                 :
 :----------------------------------------------------------------------------------------------------------------------:
 
 
 bclib.version - версия BCLib и дата выпуска
 bclib.ver - версия BCLib
-bclib.storage - объект виртуального файлового хранилища
+[W] bclib.storage - объект виртуального файлового хранилища
 [A] bclib.desktop() - показать рабочий стол
 
 bclib.util.utilmgr("object") - открыть менеджер утилит для объекта object
@@ -40,8 +41,8 @@ bclib.file.edit("filename") - изменить файл filename
 bclib.file.run("filename") - запустить файл filename
 bclib.file.delete("filename") - удалить файл filename
 bclib.file.download("filename", "link") - скачать файл filename по ссылке url
-[I]{1000} bclib.file.dump() - сбросить виртуальное файловое хранилище на диск
-[A] bclib.file.load() - загрузить файлы в виртуальное файловое хранилище
+[W] [I]{1000} bclib.file.dump() - сбросить виртуальное файловое хранилище на диск
+[W] [A] bclib.file.load() - загрузить файлы в виртуальное файловое хранилище
 bclib.file.open("filename") - открыть файл filename как HTML - документ
 
 bclib.themes.normal() - применить обычную тему
@@ -50,10 +51,10 @@ bclib.themes.winxp() - применить тему Windows XP.
 
 bclib.json.load("filename") - распарсить JSON - файл filename в объект bclib.json.filename
 
-bclib.task.kill("taskname") - снять задачу taskname
+[W] bclib.task.kill("taskname") - снять задачу taskname
 
-bclib.pkg.install("filename") - установить пакет filename
-bclib.pkg.uninstall("pkgname") - удалить пакет pkgname
+[W] bclib.pkg.install("filename") - установить пакет filename
+[W] bclib.pkg.uninstall("pkgname") - удалить пакет pkgname
 
 bclib.temp.deletedFiles - корзина
 bclib.temp.windowStyle - CSS - стили окна
