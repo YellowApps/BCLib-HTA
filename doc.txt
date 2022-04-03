@@ -56,6 +56,13 @@ bclib.json.load("filename") - распарсить JSON - файл filename в �
 [W] bclib.pkg.install("filename") - установить пакет filename
 [W] bclib.pkg.uninstall("pkgname") - удалить пакет pkgname
 
+[W] bclib.system.setWndTitle("newtitle") - установить заголовок окна BCLib на "newtitle"
+[W] bclib.system.setWndIcon("newicon") - установить значок окна BCLib на "newicon". newicon должен содержать путь к файлу .ico
+[W] bclib.system.setWndSize(w, h) - установить ширину окна BCLib в w пикселей, а высоту в h пикселей
+[W] bclib.system.setWndLocation(x, y) - переместить окно BCLib в точку x, y
+[W] bclib.system.fs - объект Windows Script Host - Scripting.FileSystemObject. Содержит методы для управления файлами Windows (подробнее: http://programming-lang.com/ru/comp_programming/popov/0/j203.html)
+[W] bclib.system.shell - объект Windows Script Host - WScript.Shell. Содержит методы для управления Windows (подробнее: http://programming-lang.com/ru/comp_programming/popov/0/j61.html)
+
 bclib.temp.deletedFiles - корзина
 bclib.temp.windowStyle - CSS - стили окна
 bclib.temp.windowHeaderStyle - CSS - стили заголовка окна
