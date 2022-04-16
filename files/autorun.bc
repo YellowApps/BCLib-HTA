@@ -1,3 +1,42 @@
-  ///////////
- //AUTORUN//
-///////////
+//BCLib AutoRun file
+
+bclib.file.run("config.conf");
+
+THEME();
+bclib.util.close();
+
+if(ALLOW_WSH_FUNCTIONS && TITLE) setInterval(function(){bclib.system.setWndTitle(TITLE)}, 10);
+
+if(ALLOW_WSH_FUNCTIONS && AUTO_UPDATE){
+	var xhr = WScript.CreateObject("Microsoft.XMLHTTP");
+	xhr.Open("GET", "https://raw.githubusercontent.com/yellowapps/bclib-hta/main/version.txt?r=" + new Date().getTime(), false);
+	xhr.Send(null);
+	var ver = +xhr.responseText;
+
+	if(ver > bclib.ver) bclib.update();
+}
+
+if(ALLOW_WSH_FUNCTIONS && AUTO_SET_DIR){
+	bclib.system.shell.Run("bclibd setdir", 0);
+}
+
+if(DUMP_FS){
+	bclib.temp.fsdumpID = setInterval(function(){
+		bclib.file.dump();
+	}, 1000);
+
+	bclib.task.fsdump = {
+		name: "fsdump",
+		onclose: "clearInterval(bclib.temp.fsdumpID)"
+	}
+}
+
+if(!ALLOW_WSH_FUNCTIONS){
+	bclib.system.fs = {};
+	bclib.system.shell = {};
+}
+
+if(!ALLOW_PACKAGES){
+	bclib.pkg.install = function(){};
+	bclib.pkg.uninstall = function(){};
+}

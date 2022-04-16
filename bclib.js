@@ -174,9 +174,9 @@ var bclib = {
             title = "HTML - страница (*.htm, *.html)"
             click="bclib.util.file.open(\""+i+"\")"
             rclick="bclib.util.file.edit(\""+i+"\", true)"
-          }else if(i.slice(i.length-4) == ".sys"){
+          }else if(i.slice(i.length-5) == ".conf"){
             file = "file-sys.png"
-            title = "Системный файл (*.sys)"
+            title = "Файл конфигурации (*.conf)"
           }else if(i.slice(i.length-5) == ".func"){
             file = "file-js.png"
             title = "Функция (*.func)"
@@ -363,6 +363,12 @@ var bclib = {
                  bclib.temp.windowHeaderStyle = "",
                  createWindow("", "<h1>Done.</h1>");
             },
+            padding: function(){
+                 bclib.temp.windowStyle = "padding: 3px; padding-top: 0px; overflow: auto; resize: both; background: white; display: inline-block; border: solid 1px black; position: absolute;",
+                 bclib.temp.closeButtonStyle = "float: right; background: white; border: solid 1px black;",
+                 bclib.temp.windowHeaderStyle = "",
+                 createWindow("", "<h1>Done.</h1>");
+            },
             dark: function(){
                  delete document.body.style.backgroundImage;
                  document.body.style.background = "#000000";
@@ -472,13 +478,13 @@ var bclib = {
         fl3.Write(xhr3.responseText);
         fl3.Close();
 
-        shell.Run("update.bat");
+        shell.Run("bclibd update", 0);
       }
     },
       winOffset: {x: 300, y: 300},
       storage: {},
-      version: "BCLib v4.8.0 HTA (03.04.2022)",
-      ver: 4.8
+      version: "BCLib v4.9.1 HTA (16.04.2022)",
+      ver: 4.9
   }
 var wnd = 0
       function createWindow(title, html){
@@ -535,12 +541,3 @@ window.onkeydown = function(e){
 }
 
 bclib.file.load();
-
-bclib.temp.fsdumpID = setInterval(function(){
-	bclib.file.dump();
-}, 1000);
-
-bclib.task.fsdump = {
-	name: "fsdump",
-	onclose: "clearInterval(bclib.temp.fsdumpID)"
-}
