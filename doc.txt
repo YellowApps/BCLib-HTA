@@ -29,6 +29,9 @@ bclib.util.filemgr() - открыть файловый менеджер
 bclib.util.edit("var") - изменить переменную var
 bclib.util.ythemer() - открыть менеджер тем
 
+bclib.util.bpf.pack("filename", "name", [files]) - запаковать файлы files в BPF-архив с внутренним именем name и именем файла filename
+bclib.util.bpf.unpack("filename") - распаковать BPF-архив filename
+
 bclib.CLI.createCLIWindow("title") - создать окно консоли с заголовком title
 bclib.CLI.echo("text") - вывести в консоль текст text
 bclib.CLI.input("text", "exec") - вывести в консоль запрос с текстом text. При нажатии на ОК введенный текст сохранится в bclib.temp.inputValue и выполнится exec
