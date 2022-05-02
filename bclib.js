@@ -218,12 +218,16 @@ var bclib = {
             //rclick=""
           }else if(i.slice(i.length-4) == ".mlf"){
             file = "file.png"
-            title = "Mediaplayer Link File"
+            title = "Mediaplayer Link File (*.mlf)"
             click="bclib.util.mediaplayer(\""+i+"\")"
           }else if(i.slice(i.length-4) == ".pkg"){
             file = "file-js.png"
-            title = "Пакет"
+            title = "Пакет (*.pkg)"
             click="bclib.CLI.createCLIWindow(\"\",1);bclib.CLI.echo(bclib.pkg.install(\""+i+"\"))"
+          }else if(i.slice(i.length-4) == ".bpf"){
+            file = "file-js.png"
+            title = "BPF-архив (*.bpf)"
+            click="bclib.util.bpf.unpack(\"" + i + "\")"
           }else{
             switch(i){
               case "key":
