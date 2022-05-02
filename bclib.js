@@ -145,8 +145,28 @@ var bclib = {
         cmd: function(state){
 			bclib.CLI.createCLIWindow('Command Line', state); bclib.CLI.input('bclib.CLI.echo(bclib.util.run(bclib.temp.inputValue))')
         },
-        taskmgr: function(){
-          taskmgr.click()
+        bpf: {
+          pack: function(fn, name, files){
+            var fc = files.length, del = "~~~BCLIB BPF FILE~~~";
+            var obj = {name: name, files: files, data: ""};
+
+            for(var i in files){
+              obj.data += bclib.file.read(files[i]) + del;
+            }
+
+            bclib.file.write(fn, JSON.stringify(obj));
+          },
+          unpack: function(filename){
+            var content = JSON.parse(bclib.file.read(filename));
+
+            content.data = content.data.replaceAll("\\r", "\r").replaceAll("\\n", "\n");
+            content.data = content.data.split("~~~BCLIB BPF FILE~~~");
+            content.data.pop();
+
+            for(var i in content.files){
+              bclib.file.write(content.name + "." + content.files[i], content.data[i]);
+            }
+          }
         },
         filemgr: function(){
         var systxt = ""
@@ -541,3 +561,12 @@ window.onkeydown = function(e){
 }
 
 bclib.file.load();
+
+bclib.temp.fsdumpID = setInterval(function(){
+	bclib.file.dump();
+}, 1000);
+
+bclib.task.fsdump = {
+	name: "fsdump",
+	onclose: "clearInterval(bclib.temp.fsdumpID)"
+}
