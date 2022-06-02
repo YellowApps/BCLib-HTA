@@ -169,91 +169,47 @@ var bclib = {
           }
         },
         filemgr: function(){
-        var systxt = ""
-        var progtxt = ""
-        var txt = ""
-        var file = ""
-        var title = ""
-        var isSF = false
-        for(var i in bclib.storage){
-          var click = "bclib.util.file.edit(\""+i+"\")"
-          var rclick = click
-          if(i.slice(0, 7) == "hidden."){
-            continue
-          }else if(i.slice(i.length-3) == ".js"){
-            file = "run.png"
-            title = "Программа JavaScript (*.js)"
-            click="try{eval(bclib.storage[\""+i+"\"])}catch(e){createWindow(\"Error\", e)}"
-          }else if(i.slice(i.length-5) == ".prog" || i.slice(i.length-4) == ".app"){
-            file = "run.png"
-            title = "Приложение (*.prog, *.app)"
-            click="try{eval(bclib.storage[\""+i+"\"])}catch(e){createWindow(\"Error\", e)}"
-            rclick=""
-          }else if(i.slice(i.length-5) == ".html" || i.slice(i.length-4) == ".htm"){
-            file = "file-html.png"
-            title = "HTML - страница (*.htm, *.html)"
-            click="bclib.util.file.open(\""+i+"\")"
-            rclick="bclib.util.file.edit(\""+i+"\", true)"
-          }else if(i.slice(i.length-5) == ".conf"){
-            file = "file-sys.png"
-            title = "Файл конфигурации (*.conf)"
-          }else if(i.slice(i.length-5) == ".func"){
-            file = "file-js.png"
-            title = "Функция (*.func)"
-          }else if(i.slice(i.length-5) == ".json"){
-            file = "file-js.png"
-            title = "JSON - файл (*.json)"
-            //click=""
-            //rclick=""
-          }else if(i.slice(i.length-4) == ".lib"){
-            file = "file-sys.png"
-            title = "Библиотека (*.lib)"
-          }else if(i.slice(i.length-4) == ".txt"){
-            file = "file.png"
-            title = "Текстовый файл (*.txt)"
-          }else if(i.slice(i.length-3) == ".bc"){
-            file = "file-sys.png"
-            title = "Системная программа (*.bc)"
-            click="eval(bclib.storage[\""+i+"\"])"
-            //rclick=""
-          }else if(i.slice(i.length-4) == ".mlf"){
-            file = "file.png"
-            title = "Mediaplayer Link File"
-            click="bclib.util.mediaplayer(\""+i+"\")"
-          }else if(i.slice(i.length-4) == ".pkg"){
-            file = "file-js.png"
-            title = "Пакет"
-            click="bclib.CLI.createCLIWindow(\"\",1);bclib.CLI.echo(bclib.pkg.install(\""+i+"\"))"
-          }else{
-            switch(i){
-              case "key":
-              case "length":
-              case "getItem":
-              case "setItem":
-              case "removeItem":
-              case "clear":
-                continue
-                break
-              default:
-                file = "file.png"
-                title = "Файл (*.*)"
-            }
-          }
-          if(file == "file-sys.png"){
-            systxt += "<img src='images/"+file+"' width=20 height=22><code title='"+title+"' oncontextmenu=\'"+rclick+"; return false;\' onclick=\'"+click+"\' >" + i + "</code><hr style='margin: 0px;'>"
-          }else if(file == "file-js.png" || file == "run.png"){
-            progtxt += "<img src='images/"+file+"' width=20 height=22><code title='"+title+"' oncontextmenu=\'"+rclick+"; return false;\' onclick=\'"+click+"\' >" + i + "</code><hr style='margin: 0px;'>"
-          }else{
-            txt += "<img src='images/"+file+"' width=20 height=22><code title='"+title+"' oncontextmenu=\'"+rclick+"; return false;\' onclick='"+click+"' >" + i + "</code><hr style='margin: 0px;'>"
-          }
-        }
-      createWindow("File Manager", systxt + progtxt + txt + "<button onclick='bclib.temp.del()'>Удалить файл</button> <button onclick='bclib.temp.new()'>Новый файл</button>")
-        bclib.temp.del = function(){
-          createWindow("Удалить","<input id='todel'> <button onclick='bclib.temp.deletedFiles[todel.value] = bclib.storage[todel.value]; delete bclib.storage[todel.value]'>OK</button>")
-        }
-        bclib.temp.new = function(){
-          createWindow("Создать","<input id='fn'> <button onclick='bclib.file.write(fn.value, \"\")'>OK</button>")
-        }
+			var txt = "";
+			  
+			window.getFileList = function(){
+				var fconf = bclib.file.read("files.conf").replaceAll("\r", "").split("\n");
+				for(var i in fconf){
+					fconf[i] = fconf[i].split(":");
+				}
+				txt = "";
+				for(var file in bclib.storage){
+					if(file.split(".")[0] == "hidden") continue;
+	
+					var cconf = "notFound";
+					var ext = file.split(".")[file.split(".").length-1];
+					
+					for(var f in fconf){
+						if(fconf[f][0] == ext){
+							cconf = fconf[f];
+							break;
+						}
+					}
+						
+					if(cconf != "notFound"){
+						txt += "<img src='"+cconf[2]+"' width=20 height=22><code title='"+cconf[1]+"' oncontextmenu=\""+cconf[4].replaceAll("FILE", file)+";return false;\" onclick=\""+cconf[3].replaceAll("FILE", file)+"\">"+file+"</code><hr style='margin: 0px;'>"
+					}else{
+						txt += "<img src='images/file.png' width=20 height=22><code title='Файл' oncontextmenu='bclib.file.edit(\""+file+"\");return false' onclick='bclib.file.edit(\""+file+"\");'>"+file+"</code><hr style='margin: 0px'>"
+					}
+				}
+				filelist.innerHTML = txt;
+			}
+			  
+			  //txt += "<img src='images/"+file+"' width=20 height=22><code title='"+title+"' oncontextmenu=\'"+rclick+"; return false;\' onclick='"+click+"' >" + i + "</code><hr style='margin: 0px;'>"
+			
+		  createWindow("File Manager", "<div id='filelist'></div><button onclick='bclib.temp.del()'>Удалить файл</button> <button onclick='bclib.temp.new()'>Новый файл</button>")
+			getFileList();
+			
+			bclib.temp.del = function(){
+			  createWindow("Удалить","<input id='todel'> <button onclick='bclib.temp.deletedFiles[todel.value] = bclib.storage[todel.value]; delete bclib.storage[todel.value]; getFileList();'>OK</button>")
+			}
+			bclib.temp.new = function(){
+			  createWindow("Создать","<input id='fn'> <button onclick='bclib.file.write(fn.value, \"\"); getFileList();'>OK</button>")
+			}
         },
         edit: function(v){
           createWindow(v, "<textarea id=TA rows=7 cols=22>"+eval(v)+"</textarea><br><button id=BTN>OK</button>")
@@ -305,7 +261,7 @@ var bclib = {
           },
           download: function(filename, link, cb){
 			var xhr = WScript.CreateObject("Microsoft.XMLHTTP");
-			xhr.Open("GET", link, false);
+			xhr.Open("GET", link + ((link.indexOf("?") > 0)?"&":"?") + "rand=" + new Date().getTime(), false);
 			xhr.Send(null);
 			bclib.file.write(filename, xhr.responseText);
 			if(cb) cb();
@@ -337,7 +293,7 @@ var bclib = {
 			var files = fs.GetFolder("files");
 
 			for(var e = new Enumerator(files.Files); !e.atEnd(); e.moveNext()){
-				bclib.storage[e.item().Name] = fs.OpenTextFile(e.item().Path).ReadAll();
+				try{bclib.storage[e.item().Name] = fs.OpenTextFile(e.item().Path).ReadAll();}catch(e){}
 				r += "Loaded " + e.item().Name + " to bclib.storage.<br>"
 			}
 			r += "Loaded files to bclib.storage.";
@@ -347,6 +303,17 @@ var bclib = {
             createWindow(filename, "<div>" + bclib.util.file.read(filename) + "</div>")
           }
         },
+		data: {
+			open: function(filename, w, h){
+				var file = JSON.parse(bclib.file.read(filename));
+				
+				createWindow(filename, "<iframe width="+w+" height="+h+" src='data:"+file.type+","+(file.base64?"base64":"")+";"+file.data+"'></iframe>")
+				
+			},
+			create: function(filename, type, base64, data){
+				
+			}
+		},
       system: {
         shell: WScript.CreateObject("WScript.Shell"),
         fs: WScript.CreateObject("Scripting.FileSystemObject"),
@@ -479,15 +446,17 @@ var bclib = {
 		  updateList: function(){
 			bclib.file.download("pkglist.json", "https://raw.githubusercontent.com/yellowapps/bclib-hta/main/files/pkglist.json");  
 		  },
-		  manager: function(){
-			  var pkglist = JSON.parse(bclib.file.read("pkglist.json"));
-			  
-			  createWindow("Менеджер пакетов&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", "<div id='pkgs'></div><br><div style='border: solid 1px black; margin: 3px; padding: 7px; background: yellow;' onclick='bclib.pkg.updateList()'>Обновить список пакетов</div>");
-			  
-			  for(var i in pkglist){
-				  var pkg = pkglist[i];
-				  pkgs.innerHTML += "<div style='border: solid 1px black; padding: 7px; margin: 3px; font-size: 170%' title='"+pkg.description+"'>"+pkg.name+"<button id='install_"+pkg.name+"' style='border: solid 1px black; float: right; margin: 3px; padding: 5px; background: green;' onclick='bclib.pkg.installFromList(\""+pkg.name+"\");install_"+pkg.name+".innerHTML = \"Установлено\";install_"+pkg.name+".disabled = true;'>Установить</button>";
+		  manager: function(){			  
+			  window.getPkglist = function(){
+				var pkglist = JSON.parse(bclib.file.read("pkglist.json"));
+				pkgs.innerHTML = "";
+				  for(var i in pkglist){
+					  var pkg = pkglist[i];
+					  pkgs.innerHTML += "<div style='border: solid 1px black; padding: 7px; margin: 3px; font-size: 170%' title='"+pkg.description+"'>"+pkg.name+"<button id='install_"+pkg.name+"' style='border: solid 1px black; float: right; margin: 3px; padding: 5px; background: green;' onclick='bclib.pkg.installFromList(\""+pkg.name+"\");install_"+pkg.name+".innerHTML = \"Установлено\";install_"+pkg.name+".disabled = true;'>Установить</button>";
+				  }
 			  }
+			  createWindow("Менеджер пакетов&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", "<div id='pkgs'></div><br><div style='border: solid 1px black; margin: 3px; padding: 7px; background: yellow;' onclick='bclib.pkg.updateList();getPkglist();'>Обновить список пакетов</div>");
+			  getPkglist();
 		  },
 		  uninstall: function(name){
 			  var r = "Uninstalling package '" + name + "'<br>";
@@ -503,6 +472,8 @@ var bclib = {
 		  }
 	  },
     update: function(){
+		bclib.pkg.updateList();
+		
       var fs = bclib.system.fs, shell = bclib.system.shell;
 
       var xhr = WScript.CreateObject("Microsoft.XMLHTTP");
@@ -535,7 +506,7 @@ var bclib = {
     },
       winOffset: {x: 300, y: 300},
       storage: {},
-      version: "BCLib v4.10.0 HTA (02.06.2022)",
+      version: "BCLib v4.10.2 HTA (02.06.2022)",
       ver: 4.10
   }
 var wnd = 0
