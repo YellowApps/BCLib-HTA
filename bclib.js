@@ -178,7 +178,7 @@ var bclib = {
         for(var i in bclib.storage){
           var click = "bclib.util.file.edit(\""+i+"\")"
           var rclick = click
-          if(i.slice(0, 7) == "hidden:"){
+          if(i.slice(0, 7) == "hidden."){
             continue
           }else if(i.slice(i.length-3) == ".js"){
             file = "run.png"
@@ -218,16 +218,12 @@ var bclib = {
             //rclick=""
           }else if(i.slice(i.length-4) == ".mlf"){
             file = "file.png"
-            title = "Mediaplayer Link File (*.mlf)"
+            title = "Mediaplayer Link File"
             click="bclib.util.mediaplayer(\""+i+"\")"
           }else if(i.slice(i.length-4) == ".pkg"){
             file = "file-js.png"
-            title = "Пакет (*.pkg)"
+            title = "Пакет"
             click="bclib.CLI.createCLIWindow(\"\",1);bclib.CLI.echo(bclib.pkg.install(\""+i+"\"))"
-          }else if(i.slice(i.length-4) == ".bpf"){
-            file = "file-js.png"
-            title = "BPF-архив (*.bpf)"
-            click="bclib.util.bpf.unpack(\"" + i + "\")"
           }else{
             switch(i){
               case "key":
@@ -307,11 +303,12 @@ var bclib = {
           delete: function(filename){
             delete bclib.storage[filename]
           },
-          download: function(filename, link){
+          download: function(filename, link, cb){
 			var xhr = WScript.CreateObject("Microsoft.XMLHTTP");
 			xhr.Open("GET", link, false);
 			xhr.Send(null);
 			bclib.file.write(filename, xhr.responseText);
+			if(cb) cb();
           },
 		  dump: function(obj){
 			if(!obj) obj = bclib.storage;
@@ -419,9 +416,17 @@ var bclib = {
             }
       },
       desktop: function(){
-        desktop.innerHTML += "\
-        <img src='images/folder.png' width=50 height=50 onclick='bclib.util.filemgr()'><br><span style='color: white'>Файловый<br>менеджер</span><br><br>\
-        <img src='images/cmd.png' width=50 height=50 onclick='bclib.util.cmd(1)'><br><span style='color: white'>Командная<br>строка</span><br><br>"
+        var dconf = bclib.file.read("desktop.conf").replaceAll("\r", "").replaceAll("\\n","<br>").replaceAll("[Options]\n", "").split("[Icons]\n");
+		eval(dconf[0]);
+		
+		var icons = dconf[1].split("\n");
+		for(var i in icons){
+			icons[i] = icons[i].split(":");
+			var icn = icons[i];
+			
+			if(i % icons_per_row == 0 && i != 0) desktop.innerHTML += "<br>";
+			desktop.innerHTML += "<div style='display: inline-block; margin: 30px' onclick='"+icn[2]+"'><img width=50 height=50 src='"+icn[1]+"'><br><span style='color: white'>"+icn[0]+"</span></div>";
+		}
       },
       json: {
           load: function(file){
@@ -460,6 +465,29 @@ var bclib = {
 			  }
 			  r += "Installed package '" + name + "'";
 			  return r;
+		  },
+		  installFromList: function(name){
+			var pkglist = JSON.parse(bclib.file.read("pkglist.json")), pkg;
+			for(var i in pkglist){
+				if(pkglist[i].name == name) pkg = pkglist[i];
+			}
+			
+			bclib.file.download(pkg.name+".pkg", pkg.link);
+			bclib.pkg.install(pkg.name+".pkg");
+			bclib.file.delete(pkg.name+".pkg");
+		  },
+		  updateList: function(){
+			bclib.file.download("pkglist.json", "https://raw.githubusercontent.com/yellowapps/bclib-hta/main/files/pkglist.json");  
+		  },
+		  manager: function(){
+			  var pkglist = JSON.parse(bclib.file.read("pkglist.json"));
+			  
+			  createWindow("Менеджер пакетов&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", "<div id='pkgs'></div><br><div style='border: solid 1px black; margin: 3px; padding: 7px; background: yellow;' onclick='bclib.pkg.updateList()'>Обновить список пакетов</div>");
+			  
+			  for(var i in pkglist){
+				  var pkg = pkglist[i];
+				  pkgs.innerHTML += "<div style='border: solid 1px black; padding: 7px; margin: 3px; font-size: 170%' title='"+pkg.description+"'>"+pkg.name+"<button id='install_"+pkg.name+"' style='border: solid 1px black; float: right; margin: 3px; padding: 5px; background: green;' onclick='bclib.pkg.installFromList(\""+pkg.name+"\");install_"+pkg.name+".innerHTML = \"Установлено\";install_"+pkg.name+".disabled = true;'>Установить</button>";
+			  }
 		  },
 		  uninstall: function(name){
 			  var r = "Uninstalling package '" + name + "'<br>";
@@ -507,8 +535,8 @@ var bclib = {
     },
       winOffset: {x: 300, y: 300},
       storage: {},
-      version: "BCLib v4.9.1 HTA (16.04.2022)",
-      ver: 4.9
+      version: "BCLib v4.10.0 HTA (02.06.2022)",
+      ver: 4.10
   }
 var wnd = 0
       function createWindow(title, html){

@@ -1,4 +1,4 @@
-Документация по BCLib 4.8.0 HTA
+Документация по BCLib 4.10.0 HTA
 
 
 :--------------------Расшифровка символов перед функциями--------------------------------------------------------------:
@@ -13,6 +13,7 @@ bclib.version - версия BCLib и дата выпуска
 bclib.ver - версия BCLib
 [W] bclib.storage - объект виртуального файлового хранилища
 [A] bclib.desktop() - показать рабочий стол
+[W] bclib.update() - обновить BCLib до самой свежей версии
 
 bclib.util.utilmgr("object") - открыть менеджер утилит для объекта object
 bclib.util.yedit("object") - открыть редактор YEdit для объекта object
@@ -28,9 +29,6 @@ bclib.util.cmd(fixed) - открыть командную строку. Если
 bclib.util.filemgr() - открыть файловый менеджер
 bclib.util.edit("var") - изменить переменную var
 bclib.util.ythemer() - открыть менеджер тем
-
-bclib.util.bpf.pack("filename", "name", [files]) - запаковать файлы files в BPF-архив с внутренним именем name и именем файла filename
-bclib.util.bpf.unpack("filename") - распаковать BPF-архив filename
 
 bclib.CLI.createCLIWindow("title") - создать окно консоли с заголовком title
 bclib.CLI.echo("text") - вывести в консоль текст text
